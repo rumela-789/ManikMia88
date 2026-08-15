@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>World Watch — দৈনিক বিশ্ব বিশ্লেষণ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla:ital@0;1&family=Hind+Siliguri:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1a1d24;
+    --paper:#eef0e9;
+    --signal:#c65d3b;   /* সংকেত-কমলা: রাডার ব্লিপের রং */
+    --line:#c9cdbf;
+    --dim:#5c6156;
+    --panel:#e2e5da;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Hind Siliguri', sans-serif;
+    line-height:1.7;
+  }
+  .wrap{max-width:820px; margin:0 auto; padding:0 20px 80px;}
+
+  /* --- হেডার: রাডার/স্ক্যান থিম --- */
+  header{
+    border-bottom:2px solid var(--ink);
+    padding:28px 0 18px;
+    position:relative;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--signal);
+    display:flex; align-items:center; gap:8px;
+  }
+  .dot{
+    width:8px; height:8px; border-radius:50%;
+    background:var(--signal);
+    animation:pulse 2s infinite;
+  }
+  @keyframes pulse{
+    0%,100%{opacity:1; box-shadow:0 0 0 0 rgba(198,93,59,.5);}
+    50%{opacity:.6; box-shadow:0 0 0 6px rgba(198,93,59,0);}
+  }
+  h1{
+    font-family:'Tiro Bangla', serif;
+    font-size:42px;
+    font-weight:400;
+    margin-top:8px;
+    letter-spacing:-.01em;
+  }
+  .subtitle{color:var(--dim); font-size:15px; margin-top:6px;}
+
+  /* --- সিগন্যাল গ্রিড: ৯ এজেন্টের স্ট্যাটাস স্ট্রিপ --- */
+  .signal-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    margin:26px 0;
+  }
+  .signal-cell{
+    background:var(--panel);
+    padding:12px 10px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    cursor:pointer;
+    transition:background .15s;
+  }
+  .signal-cell:hover, .signal-cell.active{background:#d3d7c6;}
+  .signal-cell .num{color:var(--signal); font-weight:500;}
+  .signal-cell .label{display:block; margin-top:3px; color:var(--ink); font-size:11.5px; line-height:1.4;}
+
+  /* --- ফাইনাল কলাম --- */
+  .column-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--signal);
+    text-transform:uppercase;
+    letter-spacing:.1em;
+    margin:34px 0 10px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .column-label::after{content:""; flex:1; height:1px; background:var(--line);}
+  .final-column{
+    font-family:'Tiro Bangla', serif;
+    font-size:19px;
+    line-height:1.9;
+    white-space:pre-wrap;
+  }
+
+  /* --- এজেন্ট রিপোর্ট (accordion-style, plain details/summary) --- */
+  .agent-reports{margin-top:40px;}
+  details{
+    border-top:1px solid var(--line);
+    padding:16px 0;
+  }
+  details:last-child{border-bottom:1px solid var(--line);}
+  summary{
+    cursor:pointer;
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    display:flex; justify-content:space-between; align-items:center;
+    list-style:none;
+  }
+  summary::-webkit-details-marker{display:none;}
+  summary .arrow{color:var(--signal); transition:transform .2s;}
+  details[open] summary .arrow{transform:rotate(90deg);}
+  .agent-body{
+    margin-top:14px;
+    font-size:16px;
+    white-space:pre-wrap;
+    color:#2a2d33;
+  }
+
+  footer{
+    margin-top:60px;
+    padding-top:18px;
+    border-top:1px solid var(--line);
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--dim);
+  }
+
+  .loading, .error{
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    color:var(--dim);
+    padding:40px 0;
+  }
+
+  @media (max-width:600px){
+    h1{font-size:32px;}
+    .signal-grid{grid-template-columns:repeat(2,1fr);}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow"><span class="dot"></span> LIVE DAILY SYNTHESIS · <span id="date-tag">—</span></div>
+    <h1>World Watch</h1>
+    <p class="subtitle">১০টি AI বিশ্লেষণ-এজেন্ট প্রতিদিন বিশ্বকে স্ক্যান করে — এটা তাদের আজকের রিপোর্ট।</p>
+  </header>
+
+  <div id="content">
+    <p class="loading">উপাত্ত লোড হচ্ছে...</p>
+  </div>
+
+  <footer>
+    WORLD WATCH AI · এই বিশ্লেষণ AI-জেনারেটেড, বিনিয়োগ/নীতিগত সিদ্ধান্তের একমাত্র ভিত্তি হিসেবে ব্যবহার করবেন না।
+  </footer>
+</div>
+
+<script>
+async function loadData() {
+  const content = document.getElementById('content');
+  try {
+    const res = await fetch('../data/latest.json');
+    if (!res.ok) throw new Error('data not found');
+    const data = await res.json();
+    render(data);
+  } catch (e) {
+    content.innerHTML = '<p class="error">এখনো কোনো ডেটা জেনারেট হয়নি। GitHub Actions workflow প্রথমবার রান হলে এখানে দেখা যাবে।</p>';
+  }
+}
+
+function render(data) {
+  document.getElementById('date-tag').textContent = data.date || '—';
+
+  const agentEntries = Object.entries(data.agents || {});
+  const grid = agentEntries.map(([id, a], i) => `
+    <div class="signal-cell" data-target="agent-${id}">
+      <span class="num">${String(i+1).padStart(2,'0')}</span>
+      <span class="label">${a.name}</span>
+    </div>
+  `).join('');
+
+  const reports = agentEntries.map(([id, a]) => `
+    <details id="agent-${id}">
+      <summary>${a.name} <span class="arrow">▸</span></summary>
+      <div class="agent-body">${escapeHtml(a.content)}</div>
+    </details>
+  `).join('');
+
+  document.getElementById('content').innerHTML = `
+    <div class="signal-grid">${grid}</div>
+    <div class="column-label">Chief Analyst · আজকের সংশ্লেষিত কলাম</div>
+    <div class="final-column">${escapeHtml(data.final_column || '')}</div>
+    <div class="agent-reports">
+      <div class="column-label">এজেন্ট-ভিত্তিক বিস্তারিত রিপোর্ট</div>
+      ${reports}
+    </div>
+  `;
+
+  document.querySelectorAll('.signal-cell').forEach(cell => {
+    cell.addEventListener('click', () => {
+      const el = document.getElementById(cell.dataset.target);
+      if (el) { el.open = true; el.scrollIntoView({behavior:'smooth', block:'start'}); }
+    });
+  });
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+loadData();
+</script>
+</body>
+</html>
