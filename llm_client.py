@@ -9,7 +9,7 @@ import time
 import requests
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
-MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")  # ফ্রি টায়ারে সবচেয়ে stable choice
+MODEL = os.environ.get("GEMINI_MODEL", "gemini-flash-latest") # ফ্রি টায়ারে সবচেয়ে stable choice
 BASE_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent"
 
 
