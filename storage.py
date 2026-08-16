@@ -12,7 +12,7 @@ import json
 import os
 from datetime import datetime, timezone, timedelta
 
-DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "data")
+DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 RETENTION_DAYS = 30  # এর চেয়ে পুরনো দিনের আর্টিকেল অটো-ডিলিট হবে
 
 
