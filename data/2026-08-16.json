@@ -1,0 +1,43 @@
+{
+  "date": "2026-08-16",
+  "generated_at": "2026-08-16T06:37:56.158105+00:00",
+  "agents": {
+    "world_politics": {
+      "name": "World Politics Agent",
+      "content": "[error] World Politics Agent ব্যর্থ হয়েছে: Gemini API error 503: {\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\n    \"status\": \"UNAVAILABLE\"\n  }\n}\n"
+    },
+    "breaking_news": {
+      "name": "Breaking News Agent",
+      "content": "[error] Breaking News Agent ব্যর্থ হয়েছে: Gemini API error 503: {\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\n    \"status\": \"UNAVAILABLE\"\n  }\n}\n"
+    },
+    "economy": {
+      "name": "Economy Agent",
+      "content": "[error] Economy Agent ব্যর্থ হয়েছে: Gemini API error 503: {\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\n    \"status\": \"UNAVAILABLE\"\n  }\n}\n"
+    },
+    "geopolitics": {
+      "name": "Geopolitics & Diplomacy Agent",
+      "content": "**বৈশ্বিক কূটনীতি ও দ্বিপাক্ষিক সম্পর্কের সাম্প্রতিক গতিপ্রকৃতি: কূটনৈতিক বিশ্লেষণ**\n\nগত ২৪ ঘণ্টার প্রাপ্ত তথ্য-উপাত্ত বিশ্লেষণে দেখা যায়, আন্তর্জাতিক পরিমণ্ডলে প্রযুক্তিগত মেরুকরণ, দীর্ঘস্থায়ী সংকট নিরসনে দ্বিপাক্ষিক প্রস্তাব এবং আঞ্চলিক উত্তেজনা প্রশমনে কূটনৈতিক কৌশল প্রধান নিয়ামক হিসেবে কাজ করছে। \n\n### ১. কোরীয় উপদ্বীপে শান্তি প্রক্রিয়ার নতুন উদ্যোগ\nকোরীয় উপদ্বীপে কয়েক দশকের বৈরিতা ও অস্থিতিশীলতা নিরসনে একটি বড় ধরনের কূটনৈতিক উদ্যোগের ইঙ্গিত পাওয়া গেছে। দক্ষিণ কোরিয়া আনুষ্ঠানিকভাবে উত্তর কোরিয়ার সাথে ঐতিহাসিক যুদ্ধ অবসানের লক্ষ্যে আলোচনার প্রস্তাব দিয়েছে [bbc_world]। ১৯৫৩ সালের যুদ্ধবিরতি চুক্তির পরিবর্তে একটি স্থায়ী শান্তিচুক্তি সম্পাদনের এই প্রচেষ্টা সফল হলে তা পূর্ব এশিয়ার ভূ-রাজনীতি ও দ্বিপাক্ষিক সম্পর্কে ইতিবাচক পরিবর্তন আনতে পারে।\n\n### ২. প্রযুক্তি কূটনীতি এবং ওয়াশিংটন-বেইজিং ব্লক রাজনীতি\nবিশ্ব কূটনীতিতে কৃত্রিম বুদ্ধিমত্তা (AI) ও আধুনিক প্রযুক্তির আধিপত্য বিস্তারকে কেন্দ্র করে নতুন ধরনের কূটনৈতিক জোটবদ্ধতা তৈরি হচ্ছে। \n* **মার্কিন চাপ ও মেরুকরণ:** মার্কিন যুক্তরাষ্ট্র এআই প্রতিযোগিতায় অন্যান্য দেশকে তাদের পক্ষ বেছে নেওয়ার জন্য কূটনৈতিক চাপ প্রয়োগ করছে"
+    },
+    "conflict_analysis": {
+      "name": "Conflict & Security Analysis Agent",
+      "content": "[error] Conflict & Security Analysis Agent ব্যর্থ হয়েছে: Gemini API error 503: {\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\n    \"status\": \"UNAVAILABLE\"\n  }\n}\n"
+    },
+    "technology": {
+      "name": "Technology & AI Agent",
+      "content": "[error] Technology & AI Agent ব্যর্থ হয়েছে: Gemini API error 503: {\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\n    \"status\": \"UNAVAILABLE\"\n  }\n}\n"
+    },
+    "history": {
+      "name": "History & Context Agent",
+      "content": "[error] History & Context Agent ব্যর্থ হয়েছে: Gemini API error 503: {\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\n    \"status\": \"UNAVAILABLE\"\n  }\n}\n"
+    },
+    "fact_check": {
+      "name": "Data & Fact-Check Agent",
+      "content": "[error] Data & Fact-Check Agent ব্যর্থ হয়েছে: Gemini API error 503: {\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\n    \"status\": \"UNAVAILABLE\"\n  }\n}\n"
+    },
+    "future_trends": {
+      "name": "Future Trends Agent",
+      "content": "[error] Future Trends Agent ব্যর্থ হয়েছে: Gemini API error 503: {\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\n    \"status\": \"UNAVAILABLE\"\n  }\n}\n"
+    }
+  },
+  "final_column": "[error] Chief Analyst ব্যর্থ হয়েছে: Gemini API error 503: {\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\n    \"status\": \"UNAVAILABLE\"\n  }\n}\n"
+}
