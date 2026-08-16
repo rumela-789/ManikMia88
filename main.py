@@ -1,0 +1,145 @@
+# src/main.py
+"""
+প্রধান orchestrator — এটাই GitHub Actions প্রতিদিন একবার রান করবে।
+
+ধাপ:
+1. গত ২৪ ঘণ্টার raw নিউজ ডেটা সংগ্রহ (একবারই — সব এজেন্ট শেয়ার করে, API/রেট বাঁচাতে)
+2. ৯টা বিশেষজ্ঞ এজেন্ট প্রত্যেকে নিজ নিজ বিষয়ে বিশ্লেষণ লেখে
+3. Chief Analyst Agent সব একত্র করে একটা ফাইনাল কলাম লেখে
+4. ফলাফল data/ ফোল্ডারে সেভ হয়
+"""
+
+import time
+from datetime import datetime, timezone
+
+from fetch_news import collect_daily_dataset
+from llm_client import call_gemini
+from storage import save_daily_run
+from personas import AGENTS, get_agent
+
+
+def build_user_prompt_for_research_agent(agent: dict, dataset: dict) -> str:
+    """প্রতিটা রিসার্চ এজেন্টের জন্য প্রাসঙ্গিক raw ডেটা + নির্দেশনা প্যাক করে।"""
+    return f"""
+নিচে গত ২৪ ঘণ্টার সংগৃহীত raw সংবাদ উপাত্ত দেওয়া হলো (RSS হেডলাইন + GDELT আর্টিকেল তালিকা)।
+তোমার ফোকাস ক্ষেত্র: {agent['focus']}
+
+=== RSS হেডলাইন ===
+{format_items(dataset.get('rss_headlines', [])[:25])}
+
+=== GDELT: রাজনীতি ===
+{format_items(dataset.get('gdelt_politics', [])[:15])}
+
+=== GDELT: অর্থনীতি ===
+{format_items(dataset.get('gdelt_economy', [])[:15])}
+
+=== GDELT: সংঘাত/নিরাপত্তা ===
+{format_items(dataset.get('gdelt_conflict', [])[:15])}
+
+=== GDELT: কূটনীতি ===
+{format_items(dataset.get('gdelt_diplomacy', [])[:15])}
+
+=== GDELT: প্রযুক্তি ===
+{format_items(dataset.get('gdelt_technology', [])[:15])}
+
+উপরের উপাত্ত থেকে শুধু তোমার ফোকাস ক্ষেত্রের সাথে প্রাসঙ্গিক অংশ বেছে নিয়ে
+তোমার বিশ্লেষণ লেখো (৩০০-৫০০ শব্দ, বাংলায়)। প্রতিটা গুরুত্বপূর্ণ দাবির সাথে উৎস উল্লেখ করো।
+"""
+
+
+def format_items(items: list[dict]) -> str:
+    lines = []
+    for it in items:
+        title = it.get("title", "")
+        source = it.get("source") or it.get("domain") or ""
+        link = it.get("link") or it.get("url") or ""
+        if title:
+            lines.append(f"- {title} [{source}] ({link})")
+    return "\n".join(lines) if lines else "(কোনো ডেটা পাওয়া যায়নি)"
+
+
+def run():
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    print(f"[{today}] দৈনিক এজেন্ট রান শুরু হচ্ছে...")
+
+    dataset = collect_daily_dataset()
+
+    research_agents = [a for a in AGENTS if a["id"] != "chief_analyst"]
+    agent_outputs = {}
+
+    for agent in research_agents:
+        print(f"  -> {agent['name']} চালু হচ্ছে...")
+        prompt = build_user_prompt_for_research_agent(agent, dataset)
+        try:
+            output = call_gemini(agent["system_prompt"], prompt)
+        except Exception as e:
+            output = f"[error] {agent['name']} ব্যর্থ হয়েছে: {e}"
+            print(f"     [error] {e}")
+        agent_outputs[agent["id"]] = {
+            "name": agent["name"],
+            "content": output,
+        }
+        time.sleep(4)  # ফ্রি টায়ারের RPM লিমিট মেনে চলার জন্য সামান্য বিরতি
+
+    # --- ব্যর্থ এজেন্টদের জন্য দ্বিতীয়/তৃতীয় দফা রিট্রাই পাস ---
+    # কোনো এজেন্টের কল ব্যর্থ হলে ("[error]" দিয়ে শুরু হওয়া content), পুরো রান
+    # থেমে না গিয়ে বাকি এজেন্টরা চলতে থাকে। সব এজেন্ট একবার শেষ হওয়ার পর
+    # যেসব এজেন্ট ব্যর্থ হয়েছিল তাদেরকে আবার (সর্বোচ্চ ২ বার আরও) চেষ্টা করা হয়,
+    # যাতে সাময়িক সার্ভার-ওভারলোড (503) বা রেট-লিমিটের কারণে কোনো এজেন্টের
+    # লেখা একেবারে বাদ না পড়ে।
+    max_extra_passes = 2
+    for pass_num in range(1, max_extra_passes + 1):
+        failed_ids = [
+            aid for aid, v in agent_outputs.items()
+            if v["content"].startswith("[error]")
+        ]
+        if not failed_ids:
+            break
+
+        print(f"\n[রিট্রাই পাস {pass_num}] {len(failed_ids)} টা এজেন্ট ব্যর্থ হয়েছিল, আবার চেষ্টা করা হচ্ছে...")
+        time.sleep(15)  # সার্ভার-ওভারলোড হলে একটু বেশি সময় দিয়ে দম নেওয়া
+
+        for agent in research_agents:
+            if agent["id"] not in failed_ids:
+                continue
+            print(f"  -> {agent['name']} পুনরায় চেষ্টা করা হচ্ছে (পাস {pass_num})...")
+            prompt = build_user_prompt_for_research_agent(agent, dataset)
+            try:
+                output = call_gemini(agent["system_prompt"], prompt)
+                agent_outputs[agent["id"]] = {"name": agent["name"], "content": output}
+                print(f"     সফল হয়েছে।")
+            except Exception as e:
+                print(f"     [error] এখনও ব্যর্থ: {e}")
+                agent_outputs[agent["id"]]["content"] = f"[error] {agent['name']} ব্যর্থ হয়েছে: {e}"
+            time.sleep(4)
+
+    # --- Chief Analyst: সব একত্র করে ফাইনাল কলাম ---
+    chief = get_agent("chief_analyst")
+    combined_reports = "\n\n".join(
+        f"### {v['name']}\n{v['content']}" for v in agent_outputs.values()
+    )
+    print("  -> Chief Analyst ফাইনাল কলাম লিখছে...")
+    final_column = None
+    for attempt in range(3):
+        try:
+            final_column = call_gemini(chief["system_prompt"], combined_reports)
+            break
+        except Exception as e:
+            print(f"     [error] Chief Analyst ব্যর্থ (চেষ্টা {attempt+1}/3): {e}")
+            time.sleep(15)
+    if final_column is None:
+        final_column = "[error] Chief Analyst বারবার চেষ্টা করেও ব্যর্থ হয়েছে।"
+
+    results = {
+        "date": today,
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "agents": agent_outputs,
+        "final_column": final_column,
+    }
+
+    path = save_daily_run(results)
+    print(f"সম্পন্ন। সেভ হয়েছে: {path}")
+
+
+if __name__ == "__main__":
+    run()

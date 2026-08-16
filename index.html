@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>World Watch — দৈনিক বিশ্ব বিশ্লেষণ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla:ital@0;1&family=Hind+Siliguri:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* --- চোখের আরামদায়ক সফট প্যালেট ---
+     খাঁটি কালো/সাদা (উচ্চ কনট্রাস্ট) এড়িয়ে হালকা চারকোল + উষ্ণ অফ-হোয়াইট
+     ব্যবহার করা হয়েছে, যাতে লম্বা সময় পড়তে চোখে ক্লান্তি না লাগে। */
+  :root{
+    --bg:#1c1d1f;        /* নরম গাঢ় চারকোল, খাঁটি কালো নয় */
+    --panel:#26282b;     /* সামান্য হালকা প্যানেল */
+    --panel-hover:#2f3134;
+    --ink:#e8e6e0;       /* উষ্ণ অফ-হোয়াইট, তীক্ষ্ণ সাদা নয় */
+    --ink-soft:#c7c5be;  /* বডি টেক্সটের জন্য আরেকটু নরম */
+    --line:#3a3c3f;
+    --dim:#8b8d8f;
+    --accent:#d9a566;    /* মিউটেড উষ্ণ সোনালি — একমাত্র অ্যাকসেন্ট, চোখে ধাক্কা লাগে না */
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Hind Siliguri', sans-serif;
+    line-height:1.75;
+  }
+  .wrap{max-width:800px; margin:0 auto; padding:0 20px 80px;}
+
+  header{
+    border-bottom:1px solid var(--line);
+    padding:30px 0 20px;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--accent);
+    display:flex; align-items:center; gap:8px;
+  }
+  .dot{
+    width:7px; height:7px; border-radius:50%;
+    background:var(--accent);
+    animation:pulse 2.4s infinite;
+  }
+  @keyframes pulse{
+    0%,100%{opacity:1; box-shadow:0 0 0 0 rgba(217,165,102,.35);}
+    50%{opacity:.55; box-shadow:0 0 0 6px rgba(217,165,102,0);}
+  }
+  h1{
+    font-family:'Tiro Bangla', serif;
+    font-size:38px;
+    font-weight:400;
+    margin-top:10px;
+  }
+  .subtitle{color:var(--dim); font-size:14.5px; margin-top:6px;}
+
+  /* --- Chief Analyst ফাইনাল কলাম --- */
+  .column-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11.5px;
+    color:var(--accent);
+    text-transform:uppercase;
+    letter-spacing:.1em;
+    margin:32px 0 12px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .column-label::after{content:""; flex:1; height:1px; background:var(--line);}
+  .final-column{
+    font-family:'Tiro Bangla', serif;
+    font-size:18.5px;
+    line-height:1.9;
+    color:var(--ink-soft);
+    white-space:pre-wrap;
+  }
+
+  /* --- হেডলাইন লিস্ট: ক্লিক করলে খোলে, লেখায় ক্লিক করলে বন্ধ হয় --- */
+  .agent-list{margin-top:40px;}
+  .agent-item{
+    border-top:1px solid var(--line);
+    padding:16px 0;
+    cursor:pointer;
+  }
+  .agent-item:last-child{border-bottom:1px solid var(--line);}
+  .agent-item:hover .headline-row{background:var(--panel-hover);}
+
+  .headline-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:14px;
+    padding:8px 10px;
+    margin:-8px -10px;
+    border-radius:6px;
+    transition:background .15s;
+  }
+  .headline-text{
+    font-family:'Hind Siliguri', sans-serif;
+    font-weight:600;
+    font-size:16.5px;
+    color:var(--ink);
+  }
+  .headline-meta{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--dim);
+    margin-top:4px;
+  }
+  .headline-arrow{
+    color:var(--accent);
+    font-size:13px;
+    flex-shrink:0;
+    transition:transform .2s;
+  }
+  .agent-item.open .headline-arrow{transform:rotate(90deg);}
+
+  .full-text{
+    display:none;
+    margin-top:14px;
+    padding:2px 10px 4px;
+    font-size:16px;
+    line-height:1.85;
+    color:var(--ink-soft);
+    white-space:pre-wrap;
+  }
+  .agent-item.open .full-text{display:block;}
+  .collapse-hint{
+    display:block;
+    margin-top:14px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    color:var(--dim);
+    text-transform:uppercase;
+    letter-spacing:.08em;
+  }
+
+  footer{
+    margin-top:56px;
+    padding-top:18px;
+    border-top:1px solid var(--line);
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    color:var(--dim);
+    line-height:1.6;
+  }
+
+  .loading, .error{
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    color:var(--dim);
+    padding:40px 0;
+  }
+
+  @media (max-width:600px){
+    h1{font-size:30px;}
+    .headline-text{font-size:15.5px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow"><span class="dot"></span> LIVE DAILY SYNTHESIS · <span id="date-tag">—</span></div>
+    <h1>World Watch</h1>
+    <p class="subtitle">১০টি AI বিশ্লেষণ-এজেন্ট প্রতিদিন বিশ্বকে স্ক্যান করে — এটা তাদের আজকের রিপোর্ট।</p>
+  </header>
+
+  <div id="content">
+    <p class="loading">উপাত্ত লোড হচ্ছে...</p>
+  </div>
+
+  <footer>
+    WORLD WATCH AI · এই বিশ্লেষণ AI-জেনারেটেড, বিনিয়োগ/নীতিগত সিদ্ধান্তের একমাত্র ভিত্তি হিসেবে ব্যবহার করবেন না।
+  </footer>
+</div>
+
+<script>
+async function loadData() {
+  const content = document.getElementById('content');
+  try {
+    const res = await fetch('data/latest.json');
+    if (!res.ok) throw new Error('data not found');
+    const data = await res.json();
+    render(data);
+  } catch (e) {
+    content.innerHTML = '<p class="error">এখনো কোনো ডেটা জেনারেট হয়নি। GitHub Actions workflow প্রথমবার সম্পূর্ণ রান হলে এখানে আজকের বিশ্লেষণ দেখা যাবে।</p>';
+  }
+}
+
+// প্রতিটা এজেন্ট-রিপোর্টের প্রথম বাক্য/অংশটুকু হেডলাইন হিসেবে ব্যবহার করে
+function makeHeadline(text, maxLen = 70) {
+  if (!text) return '';
+  const clean = text.replace(/^\*+\s*/, '').trim();
+  const firstLine = clean.split('\n')[0];
+  const sentence = firstLine.split(/(?<=[।.!?])\s/)[0] || firstLine;
+  return sentence.length > maxLen ? sentence.slice(0, maxLen).trim() + '…' : sentence;
+}
+
+function render(data) {
+  document.getElementById('date-tag').textContent = data.date || '—';
+
+  const agentEntries = Object.entries(data.agents || {});
+
+  const items = agentEntries.map(([id, a], i) => {
+    const isError = (a.content || '').startsWith('[error]');
+    const headline = isError ? `${a.name} — সাময়িকভাবে জেনারেট হয়নি` : makeHeadline(a.content);
+    return `
+      <div class="agent-item" id="agent-${id}">
+        <div class="headline-row">
+          <div>
+            <div class="headline-text">${escapeHtml(headline)}</div>
+            <div class="headline-meta">${String(i+1).padStart(2,'0')} · ${a.name}</div>
+          </div>
+          <span class="headline-arrow">▸</span>
+        </div>
+        <div class="full-text">${escapeHtml(a.content || '')}<span class="collapse-hint">▲ বন্ধ করতে লেখায় ক্লিক করুন</span></div>
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('content').innerHTML = `
+    <div class="column-label">Chief Analyst · আজকের সংশ্লেষিত কলাম</div>
+    <div class="final-column">${escapeHtml(data.final_column || '')}</div>
+
+    <div class="agent-list">
+      <div class="column-label">হেডলাইন · ক্লিক করে বিস্তারিত পড়ুন</div>
+      ${items}
+    </div>
+  `;
+
+  document.querySelectorAll('.agent-item').forEach(item => {
+    item.addEventListener('click', () => {
+      item.classList.toggle('open');
+    });
+  });
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+loadData();
+</script>
+</body>
+</html>
