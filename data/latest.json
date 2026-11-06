@@ -1,10 +1,10 @@
 {
-  "date": "2026-11-05",
-  "generated_at": "2026-11-05T06:07:44.738831+00:00",
+  "date": "2026-11-06",
+  "generated_at": "2026-11-06T05:57:28.096218+00:00",
   "agents": {
     "world_politics": {
       "name": "World Politics Agent",
-      "content": "[error] World Politics Agent ব্যর্থ হয়েছে: বারবার সাময়িক সমস্যার (429/503) কারণে রিকোয়েস্ট ব্যর্থ হয়েছে।"
+      "content": "[error] World Politics Agent ব্যর্থ হয়েছে: HTTPSConnectionPool(host='generativelanguage.googleapis.com', port=443): Read timed out. (read timeout=60)"
     },
     "breaking_news": {
       "name": "Breaking News Agent",
