@@ -1,10 +1,10 @@
 {
-  "date": "2026-11-15",
-  "generated_at": "2026-11-15T05:36:17.707858+00:00",
+  "date": "2026-11-16",
+  "generated_at": "2026-11-16T05:39:56.608546+00:00",
   "agents": {
     "world_politics": {
       "name": "World Politics Agent",
-      "content": "[error] World Politics Agent ব্যর্থ হয়েছে: HTTPSConnectionPool(host='generativelanguage.googleapis.com', port=443): Read timed out. (read timeout=60)"
+      "content": "[error] World Politics Agent ব্যর্থ হয়েছে: বারবার সাময়িক সমস্যার (429/503) কারণে রিকোয়েস্ট ব্যর্থ হয়েছে।"
     },
     "breaking_news": {
       "name": "Breaking News Agent",
@@ -20,7 +20,7 @@
     },
     "conflict_analysis": {
       "name": "Conflict & Security Analysis Agent",
-      "content": "[error] Conflict & Security Analysis Agent ব্যর্থ হয়েছে: HTTPSConnectionPool(host='generativelanguage.googleapis.com', port=443): Read timed out. (read timeout=60)"
+      "content": "[error] Conflict & Security Analysis Agent ব্যর্থ হয়েছে: বারবার সাময়িক সমস্যার (429/503) কারণে রিকোয়েস্ট ব্যর্থ হয়েছে।"
     },
     "technology": {
       "name": "Technology & AI Agent",
