@@ -1,6 +1,6 @@
 {
-  "date": "2026-10-26",
-  "generated_at": "2026-10-26T04:07:41.544637+00:00",
+  "date": "2026-11-26",
+  "generated_at": "2026-11-26T07:43:30.025956+00:00",
   "agents": {
     "world_politics": {
       "name": "World Politics Agent",
@@ -36,7 +36,7 @@
     },
     "future_trends": {
       "name": "Future Trends Agent",
-      "content": "[error] Future Trends Agent ব্যর্থ হয়েছে: HTTPSConnectionPool(host='generativelanguage.googleapis.com', port=443): Read timed out. (read timeout=60)"
+      "content": "[error] Future Trends Agent ব্যর্থ হয়েছে: বারবার সাময়িক সমস্যার (429/503) কারণে রিকোয়েস্ট ব্যর্থ হয়েছে।"
     }
   },
   "final_column": "[error] Chief Analyst বারবার চেষ্টা করেও ব্যর্থ হয়েছে।"
